@@ -1,0 +1,39 @@
+---
+name: Crawl
+'on':
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+
+  Crawl:
+    name: Crawl
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@v2
+
+      - name: Crawl the latest IPs list.
+        run: curl https://developers.google.com/search/apis/ipranges/googlebot.json -o googlebot.json -L
+
+      - name: Separate into different formats and types.
+        run: |
+          jq '.prefixes[] | .ipv4Prefix' googlebot.json | grep -v null > "ipv4.txt"
+          jq '.prefixes[] | .ipv6Prefix' googlebot.json | grep -v null > "ipv6.txt"
+
+      - name: Create Pull Request.
+        if: github.event_name != 'pull_request'
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Automatic Crawl
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: automatic_crawl
+          delete-branch: true
+          title: 'Automatic Crawl'
+          draft: false
