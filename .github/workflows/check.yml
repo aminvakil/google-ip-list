@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the codebase.
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Crawl the latest IPs list.
         run: curl https://developers.google.com/search/apis/ipranges/googlebot.json -o googlebot.json -L
