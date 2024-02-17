@@ -24,13 +24,13 @@ jobs:
 
       - name: Separate into different formats and types.
         run: |
-          printf '# googlebot\n' > "ipv4.txt" && jq -r '.prefixes[] | .ipv4Prefix' googlebot.json | grep -v null >> "ipv4.txt"
-          printf '\n# special-crawlers\n' >> ipv4.txt && jq -r '.prefixes[] | .ipv4Prefix' special-crawlers.json | grep -v null >> "ipv4.txt"
-          printf '\n# user-triggered-fetchers\n' >> ipv4.txt && jq -r '.prefixes[] | .ipv4Prefix' user-triggered-fetchers.json | grep -v null >> "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix' googlebot.json | grep -v null > "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix' special-crawlers.json | grep -v null >> "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix' user-triggered-fetchers.json | grep -v null >> "ipv4.txt"
           
-          printf '# googlebot\n' > "ipv6.txt" && jq -r '.prefixes[] | .ipv6Prefix' googlebot.json | grep -v null >> "ipv6.txt"
-          printf '\n# special-crawlers\n' >> ipv6.txt && jq -r '.prefixes[] | .ipv6Prefix' special-crawlers.json | grep -v null >> "ipv6.txt"
-          printf '\n# user-triggered-fetchers\n' >> ipv6.txt && jq -r '.prefixes[] | .ipv6Prefix' user-triggered-fetchers.json | grep -v null >> "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix' googlebot.json | grep -v null > "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix' special-crawlers.json | grep -v null >> "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix' user-triggered-fetchers.json | grep -v null >> "ipv6.txt"
 
       - name: Create Pull Request.
         if: github.event_name != 'pull_request'
