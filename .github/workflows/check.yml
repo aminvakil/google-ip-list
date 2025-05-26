@@ -27,7 +27,7 @@ jobs:
           jq -r '.prefixes[] | .ipv4Prefix' googlebot.json | grep -v null > "ipv4.txt"
           jq -r '.prefixes[] | .ipv4Prefix' special-crawlers.json | grep -v null >> "ipv4.txt"
           jq -r '.prefixes[] | .ipv4Prefix' user-triggered-fetchers.json | grep -v null >> "ipv4.txt"
-          
+
           jq -r '.prefixes[] | .ipv6Prefix' googlebot.json | grep -v null > "ipv6.txt"
           jq -r '.prefixes[] | .ipv6Prefix' special-crawlers.json | grep -v null >> "ipv6.txt"
           jq -r '.prefixes[] | .ipv6Prefix' user-triggered-fetchers.json | grep -v null >> "ipv6.txt"
