@@ -5,7 +5,7 @@ name: Crawl
     branches:
       - main
   schedule:
-    - cron: '0 * * * *'
+    - cron: '* * * * *'
 
 jobs:
 
