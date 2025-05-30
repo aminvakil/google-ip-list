@@ -48,10 +48,10 @@ jobs:
           title: 'Automatic Crawl'
           draft: false
 
-      - name: Automerge if ipv4.txt has not changed
+      - name: Automerge if only json files have been changed
         if: steps.cpr.outputs.pull-request-operation == 'created'
         run: |
-          if [[ $(git diff automatic_crawl..main --name-only | grep -E "googlebot.json|special-crawlers.json|user-triggered-fetchers.json") ]]; then
+          if [[ ! $(git diff automatic_crawl..main --name-only | grep -vE "googlebot.json|special-crawlers.json|user-triggered-fetchers.json") ]]; then
               gh pr merge --merge --auto --delete-branch "${{ steps.cpr.outputs.pull-request-number }}"
           fi
         env:
