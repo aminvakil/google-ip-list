@@ -34,6 +34,7 @@ jobs:
 
       - name: Create Pull Request.
         if: github.event_name != 'pull_request'
+        id: cpr
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,12 +48,11 @@ jobs:
           draft: false
 
       - name: Automerge if ipv4.txt has not changed
+        if: steps.cpr.outputs.pull-request-operation == 'created'
         run: |
-          if [ $(git rev-parse --abbrev-ref HEAD) == "automatic_crawl" ]; then
-              if [ ! $(git diff automatic_crawl..main --name-only | grep ipv4.txt) ]; then
-                  gh pr review --approve automatic_crawl
-                  gh pr merge --merge --auto --delete-branch "automatic_crawl"
-              fi
+          if [ ! $(git diff automatic_crawl..main --name-only | grep ipv4.txt) ]; then
+              gh pr review --approve automatic_crawl
+              gh pr merge --merge --auto --delete-branch "automatic_crawl"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
