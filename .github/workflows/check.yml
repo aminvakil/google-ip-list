@@ -51,8 +51,8 @@ jobs:
         if: steps.cpr.outputs.pull-request-operation == 'created'
         run: |
           if [ ! $(git diff automatic_crawl..main --name-only | grep ipv4.txt) ]; then
-              gh pr review --approve automatic_crawl
-              gh pr merge --merge --auto --delete-branch "automatic_crawl"
+              gh pr review --approve "${{ steps.cpr.outputs.pull-request-number }}"
+              gh pr merge --merge --auto --delete-branch "${{ steps.cpr.outputs.pull-request-number }}"
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
