@@ -44,6 +44,8 @@ jobs:
               git commit -a -m "Automatic Crawl"
               gh pr create --fill
           fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Automerge if only json files have been changed
         if: contains(github.ref, 'automatic_crawl')
