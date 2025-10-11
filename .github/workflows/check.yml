@@ -45,14 +45,21 @@ jobs:
               git config user.name "${{ github.actor }}"
               git commit -a -m "Automatic Crawl"
               git push --force -u origin automatic_crawl
-              gh pr create --fill
-              echo "pull-request-operation='created'" >> $GITHUB_OUTPUT
+              PR_NUMBER=$(gh pr list --head automatic_crawl --json number --jq '.[0].number')
+              if [ -n "${PR_NUMBER}" ]; then
+                  echo "pull-request-operation='updated'" >> $GITHUB_OUTPUT
+              else
+                  gh pr create --fill
+                  echo "pull-request-operation='created'" >> $GITHUB_OUTPUT
+              fi
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Automerge if only json files have been changed
-        if: steps.cpr.outputs.pull-request-operation == 'created'
+        if: |
+          steps.cpr.outputs.pull-request-operation == 'created' ||
+          steps.cpr.outputs.pull-request-operation == 'updated'
         run: |
           if [[ ! $(git diff automatic_crawl..main --name-only | grep -vE "googlebot.json|special-crawlers.json|user-triggered-fetchers.json") ]]; then
               gh pr merge --merge --auto --delete-branch "${{ steps.cpr.outputs.pull-request-number }}"
