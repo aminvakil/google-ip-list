@@ -37,11 +37,13 @@ jobs:
         if: github.event_name != 'pull_request'
         id: cpr
         run: |
-          git checkout -b automatic_crawl
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git config user.name "${{ github.actor }}"
-          git commit -a -m "Automatic Crawl"
-          gh pr create --fill
+          if ! git diff --quiet; then
+              git checkout -b automatic_crawl
+              git config user.email "${{ github.actor }}@users.noreply.github.com"
+              git config user.name "${{ github.actor }}"
+              git commit -a -m "Automatic Crawl"
+              gh pr create --fill
+          fi
 
       - name: Automerge if only json files have been changed
         if: steps.cpr.outputs.pull-request-operation == 'created'
