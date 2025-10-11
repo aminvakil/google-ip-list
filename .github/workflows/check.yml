@@ -45,6 +45,7 @@ jobs:
                   git stash
                   git switch automatic_crawl
                   git stash pop
+                  git diff
               else
                   git branch automatic_crawl
                   git switch automatic_crawl
