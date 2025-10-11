@@ -40,8 +40,9 @@ jobs:
           if ! git diff --quiet; then
               git fetch
               if git rev-parse --verify origin/automatic_crawl >/dev/null 2>&1; then
+                  git stash
                   git switch automatic_crawl
-                  git pull
+                  git stash pop
               else
                   git branch automatic_crawl
                   git switch automatic_crawl
