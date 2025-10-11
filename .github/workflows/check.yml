@@ -39,7 +39,7 @@ jobs:
         run: |
           if ! git diff --quiet; then
               git pull
-              git checkout -B automatic_crawl --guess
+              git checkout -B automatic_crawl
               git config user.email "${{ github.actor }}@users.noreply.github.com"
               git config user.name "${{ github.actor }}"
               git commit -a -m "Automatic Crawl"
