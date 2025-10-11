@@ -39,8 +39,13 @@ jobs:
         run: |
           if ! git diff --quiet; then
               git fetch
-              git checkout -B automatic_crawl
-              git pull
+              if git rev-parse --verify origin/automatic_crawl >/dev/null 2>&1; then
+                  git switch automatic_crawl
+                  git pull
+              else
+                  git branch automatic_crawl
+                  git switch automatic_crawl
+              fi
               git config user.email "${{ github.actor }}@users.noreply.github.com"
               git config user.name "${{ github.actor }}"
               git commit -a -m "Automatic Crawl"
