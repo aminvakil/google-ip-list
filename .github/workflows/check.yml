@@ -49,7 +49,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Automerge if only json files have been changed
-        if: contains(github.ref, 'automatic_crawl')
+        if: steps.cpr.outputs.pull-request-operation == 'created'
         run: |
           if [[ ! $(git diff automatic_crawl..main --name-only | grep -vE "googlebot.json|special-crawlers.json|user-triggered-fetchers.json") ]]; then
               gh pr merge --merge --auto --delete-branch "${{ steps.cpr.outputs.pull-request-number }}"
