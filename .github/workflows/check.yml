@@ -44,6 +44,7 @@ jobs:
               git commit -a -m "Automatic Crawl"
               git push -u origin automatic_crawl
               gh pr create --fill
+              echo "pull-request-operation='created'" >> $GITHUB_OUTPUT
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
