@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Check out the codebase.
         uses: actions/checkout@main
+        with:
+          fetch-depth: 0
 
       - name: Crawl the latest IPs list.
         run: |
