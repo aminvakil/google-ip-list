@@ -44,7 +44,7 @@ jobs:
               git config user.email "${{ github.actor }}@users.noreply.github.com"
               git config user.name "${{ github.actor }}"
               git commit -a -m "Automatic Crawl"
-              git push --force-with-lease -u origin automatic_crawl
+              git push --force -u origin automatic_crawl
               gh pr create --fill
               echo "pull-request-operation='created'" >> $GITHUB_OUTPUT
           fi
