@@ -37,9 +37,11 @@ jobs:
         if: github.event_name != 'pull_request'
         id: cpr
         run: |
+          set -x
           if ! git diff --quiet; then
               git fetch
               if git rev-parse --verify origin/automatic_crawl >/dev/null 2>&1; then
+                  git diff
                   git stash
                   git switch automatic_crawl
                   git stash pop
