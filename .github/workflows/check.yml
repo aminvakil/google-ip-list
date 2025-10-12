@@ -47,12 +47,12 @@ jobs:
               git push --force -u origin automatic_crawl
               PR_NUMBER=$(gh pr list --head automatic_crawl --json number --jq '.[0].number')
               if [ -n "${PR_NUMBER}" ]; then
-                  echo "pull-request-operation='updated'" >> $GITHUB_OUTPUT
+                  echo "pull-request-operation=updated" >> $GITHUB_OUTPUT
                   echo "pull-request-number=${PR_NUMBER}" >> $GITHUB_OUTPUT
               else
                   gh pr create --fill
                   PR_NUMBER=$(gh pr list --head automatic_crawl --json number --jq '.[0].number')
-                  echo "pull-request-operation='created'" >> $GITHUB_OUTPUT
+                  echo "pull-request-operation=created" >> $GITHUB_OUTPUT
                   echo "pull-request-number=${PR_NUMBER}" >> $GITHUB_OUTPUT
               fi
           fi
