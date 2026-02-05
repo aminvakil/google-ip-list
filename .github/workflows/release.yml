@@ -1,0 +1,38 @@
+---
+name: Release
+'on':
+  push:
+    branches:
+      - main
+    paths:
+      - 'ipv4.txt'
+      - 'ipv6.txt'
+
+jobs:
+
+  Release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the codebase.
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+
+      - name: Create tag
+        run: |
+          set -x
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
+          TODAYDATE=$(date -u "+%Y%m%d")
+          if [[ ! $(git tag | grep "${TODAYDATE}") ]]; then
+              SUFFIX=1
+          else
+              LATEST_TAG=$(git describe --tags --abbrev=0)
+              SUFFIX=$(echo ${LATEST_TAG} | sed "s/${TODAYDATE}-//")
+              SUFFIX=$((SUFFIX+1))
+          fi
+          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:%s | git tag ${TODAYDATE}-${SUFFIX} -F -
+          git push --tags
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
