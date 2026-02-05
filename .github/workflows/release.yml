@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Create tag
+      - name: Create tag and release
         run: |
           set -x
           git config user.email "${{ github.actor }}@users.noreply.github.com"
@@ -33,5 +33,6 @@ jobs:
           fi
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:%s | git tag ${TODAYDATE}-${SUFFIX} -F -
           git push --tags
+          gh release create ${TODAYDATE}-${SUFFIX} --generate-notes --latest --verify-tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
