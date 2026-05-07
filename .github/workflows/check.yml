@@ -19,19 +19,26 @@ jobs:
 
       - name: Crawl the latest IPs list.
         run: |
-          curl https://developers.google.com/static/crawling/ipranges/common-crawlers.json -o googlebot.json -L
-          curl https://developers.google.com/static/crawling/ipranges/special-crawlers.json -o special-crawlers.json -L
-          curl https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers.json -o user-triggered-fetchers.json -L
+          curl -fsSL https://developers.google.com/static/crawling/ipranges/common-crawlers.json -o googlebot.json
+          curl -fsSL https://developers.google.com/static/crawling/ipranges/special-crawlers.json -o special-crawlers.json
+          curl -fsSL https://developers.google.com/static/crawling/ipranges/user-triggered-fetchers.json -o user-triggered-fetchers.json
+
+          jq -e '.prefixes | length > 0' googlebot.json >/dev/null
+          jq -e '.prefixes | length > 0' special-crawlers.json >/dev/null
+          jq -e '.prefixes | length > 0' user-triggered-fetchers.json >/dev/null
 
       - name: Separate into different formats and types.
         run: |
-          jq -r '.prefixes[] | .ipv4Prefix' googlebot.json | grep -v null > "ipv4.txt"
-          jq -r '.prefixes[] | .ipv4Prefix' special-crawlers.json | grep -v null >> "ipv4.txt"
-          jq -r '.prefixes[] | .ipv4Prefix' user-triggered-fetchers.json | grep -v null >> "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix // empty' googlebot.json > "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix // empty' special-crawlers.json >> "ipv4.txt"
+          jq -r '.prefixes[] | .ipv4Prefix // empty' user-triggered-fetchers.json >> "ipv4.txt"
 
-          jq -r '.prefixes[] | .ipv6Prefix' googlebot.json | grep -v null > "ipv6.txt"
-          jq -r '.prefixes[] | .ipv6Prefix' special-crawlers.json | grep -v null >> "ipv6.txt"
-          jq -r '.prefixes[] | .ipv6Prefix' user-triggered-fetchers.json | grep -v null >> "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix // empty' googlebot.json > "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix // empty' special-crawlers.json >> "ipv6.txt"
+          jq -r '.prefixes[] | .ipv6Prefix // empty' user-triggered-fetchers.json >> "ipv6.txt"
+
+          test -s "ipv4.txt"
+          test -s "ipv6.txt"
 
       - name: Create Pull Request.
         if: github.event_name != 'pull_request'
